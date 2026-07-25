@@ -2,18 +2,29 @@ import mongoose from "mongoose";
 
 const jogoSchema = new mongoose.Schema(
     {
+        idIGDB: {
+            type: Number,
+            unique: true,
+            index: true,
+        },
+
         titulo: {
             type: String,
             required: true,
         },
 
-        estudio: {
-            type: String,
+        desenvolvedor: {
+            type: [String],
             required: true,
         },
 
-        anoLancamento: {
-            type: String,
+        publicadoras: {
+            type: [String],
+            required: true,
+        },
+
+        dataLancamento: {
+            type: Date,
             required: true,
         },
 
@@ -40,8 +51,16 @@ const jogoSchema = new mongoose.Schema(
         capa: {
             type: String,
         },
+
+        quantidadeReviews: {
+            type: Number,
+            default: 0,
+        },
     },
     {
         timestamps: true,
     }
 );
+
+const Jogo = mongoose.model("Jogo", jogoSchema);
+export default Jogo;

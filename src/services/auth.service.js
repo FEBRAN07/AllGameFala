@@ -31,6 +31,8 @@ function gerarToken(usuario) {
         id: usuario._id.toString(),
 
         email: usuario.email,
+
+        tipo: usuario.tipo,
     };
 
     const opcoesDoToken = {

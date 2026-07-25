@@ -6,6 +6,8 @@ import usuarioRoutes from "./routes/usuario.routes.js";
 
 import erroMiddleware from "./middlewares/erro.middleware.js";
 
+import jogoRoutes from "./routes/jogo.routes.js";
+
 import criarErro from "./utils/criarErro.js";
 
 const app = express();
@@ -19,6 +21,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 app.use("/api/usuarios", usuarioRoutes);
+
+app.use("/api/jogos", jogoRoutes);
 
 app.use((req, res, next) => {
     return next(criarErro("Rota não encontrada.", 404));

@@ -4,7 +4,7 @@ import app from "./app.js";
 
 import conectarBanco from "./config/database.js";
 
-dotenv.config({ path: "../.env" });
+dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
