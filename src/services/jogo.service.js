@@ -35,9 +35,21 @@ async function getOuCriarJogo(idIGDB) {
     return jogo;
 }
 
+async function atualizarJogo(id, dadosAtualizados) {
+    const jogoAtualizado = await JogoRepository.atualizarPorId(id, dadosAtualizados);
+    return jogoAtualizado;
+}
+
+async function deletarJogo(id) {
+    const jogoDeletado = await JogoRepository.deletarPorId(id);
+    return jogoDeletado;
+}
+
 const JogoService = {
     buscarJogos,
     getOuCriarJogo,
+    atualizarJogo,
+    deletarJogo,
 };
 
 export default JogoService;

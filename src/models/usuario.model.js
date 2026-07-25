@@ -38,6 +38,15 @@ const UsuarioSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
+        toJSON: {
+            transform(document, retorno) {
+                delete retorno.senhaHash;
+
+                delete retorno.__v;
+
+                return retorno;
+            },
+        },
     }
 );
 
