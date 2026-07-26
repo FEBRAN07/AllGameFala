@@ -2,7 +2,7 @@ import SugestaoService from "../services/sugestao.service.js";
 
 async function criarSugestao(req, res, next) {
     try {
-        const sugestao = await SugestaoService.criarSugestao(req.body);
+        const sugestao = await SugestaoService.criarSugestao(req.usuario.id, req.body);
         return res.status(201).json(sugestao);
     } catch (error) {
         next(error);

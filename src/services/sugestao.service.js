@@ -2,9 +2,8 @@ import SugestaoRepository from "../repositories/sugestao.repository.js";
 import UsuarioRepository from "../repositories/usuario.repository.js";
 import criarErro from "../utils/criarErro.js";
 
-async function validarDados(dados) {
-    const id = dados.usuario;
-    const usuario = await UsuarioRepository.buscarPorId(id);
+async function validarDados(idUsuario, dados) {
+    const usuario = await UsuarioRepository.buscarPorId(idUsuario);
     if (!usuario) {
         throw criarErro("Usuario não encontrado", 404);
     }
@@ -18,9 +17,9 @@ async function validarDados(dados) {
     }
 }
 
-async function criarSugestao(dados) {
-    validarDados(dados);
-    const sugestao = await SugestaoRepository.criar(dados);
+async function criarSugestao(idUsuario, dados) {
+    validarDados(idUsuario, dados);
+    const sugestao = await SugestaoRepository.criar({ ...dados, usuario: idUsuario });
     return sugestao;
 }
 
@@ -48,3 +47,5 @@ const SugestaoService = {
     deletarSugestao,
     listarSugestoes,
 };
+
+export default SugestaoService;

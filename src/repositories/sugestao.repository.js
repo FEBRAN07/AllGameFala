@@ -18,7 +18,7 @@ async function atualizarStatus(id, status) {
 }
 
 async function listar() {
-    const sugestoes = await Sugestao.find();
+    const sugestoes = await Sugestao.find().populate("usuario", "nome");
     return sugestoes;
 }
 
