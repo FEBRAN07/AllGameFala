@@ -1,5 +1,4 @@
 import axios from "axios";
-import Jogo from "../models/jogo.model.js";
 
 //https://api-docs.igdb.com/
 
