@@ -9,6 +9,11 @@ async function buscarJogos(termoBusca) {
     return resultado;
 }
 
+async function cadastrarJogo(dados) {
+    const jogo = await JogoRepository.criar(dados);
+    return jogo;
+}
+
 async function getOuCriarJogo(idIGDB) {
     let jogo = await JogoRepository.buscarPorIdIGDB(idIGDB);
     if (jogo) return jogo;
@@ -50,6 +55,7 @@ const JogoService = {
     getOuCriarJogo,
     atualizarJogo,
     deletarJogo,
+    cadastrarJogo
 };
 
 export default JogoService;

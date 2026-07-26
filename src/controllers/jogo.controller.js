@@ -10,6 +10,15 @@ async function buscar(req, res) {
     }
 }
 
+async function cadastrarJogo(req, res) {
+    try {
+        const jogo = await JogoService.cadastrarJogo(req.body);
+        return res.status(201).json(jogo);
+    } catch (error) {
+        return res.status(502).json({ error: "Falha ao cadastrar jogo", message: error.message });
+    }
+}
+
 async function getJogo(req, res) {
     try {
         const jogo = await JogoService.getOuCriarJogo(req.params.idIGDB);
@@ -45,6 +54,7 @@ const JogoController = {
     getJogo,
     atualizarJogo,
     deletarJogo,
+    cadastrarJogo
 };
 
 export default JogoController;
