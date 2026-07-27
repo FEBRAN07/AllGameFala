@@ -1,5 +1,13 @@
 import JogoRepository from "../repositories/jogo.repository.js";
 import igdbRequest from "./igdb.service.js";
+import criarErro from "../utils/criarErro.js";
+
+async function verificarId(id) {
+    const jogo = await JogoRepository.buscarPorIdNosso(id);
+    if (!jogo) {
+        throw criarErro("Jogo não encontrado", 404);
+    }
+}
 
 async function buscarJogos(termoBusca) {
     const resultado = await igdbRequest(
@@ -41,11 +49,13 @@ async function getOuCriarJogo(idIGDB) {
 }
 
 async function atualizarJogo(id, dadosAtualizados) {
+    await verificarId(id);
     const jogoAtualizado = await JogoRepository.atualizarPorId(id, dadosAtualizados);
     return jogoAtualizado;
 }
 
 async function deletarJogo(id) {
+    await verificarId(id);
     const jogoDeletado = await JogoRepository.deletarPorId(id);
     return jogoDeletado;
 }
@@ -55,7 +65,7 @@ const JogoService = {
     getOuCriarJogo,
     atualizarJogo,
     deletarJogo,
-    cadastrarJogo
+    cadastrarJogo,
 };
 
 export default JogoService;

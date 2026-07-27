@@ -1,51 +1,50 @@
 import JogoService from "../services/jogo.service.js";
 
-async function buscar(req, res) {
+async function buscar(req, res, next) {
     try {
         const resultado = await JogoService.buscarJogos(req.query.q);
         return res.status(200).json(resultado);
     } catch (error) {
-        console.error(error.response?.data || err.message);
-        return res.status(502).json({ error: "Falha ao buscar jogos", message: error.message });
+        next(error);
     }
 }
 
-async function cadastrarJogo(req, res) {
+async function cadastrarJogo(req, res, next) {
     try {
         const jogo = await JogoService.cadastrarJogo(req.body);
         return res.status(201).json(jogo);
     } catch (error) {
-        return res.status(502).json({ error: "Falha ao cadastrar jogo", message: error.message });
+        next(error);
     }
 }
 
-async function getJogo(req, res) {
+async function getJogo(req, res, next) {
     try {
         const jogo = await JogoService.getOuCriarJogo(req.params.idIGDB);
         return res.status(200).json(jogo);
     } catch (error) {
-        return res.status(502).json({ error: "Falha ao buscar ou criar jogo", message: error.message });
+        next(error);
     }
 }
 
-async function atualizarJogo(req, res) {
+async function atualizarJogo(req, res, next) {
     try {
         const dadosAtualizados = req.body;
         const id = req.params.id;
         const jogoAtualizado = await JogoService.atualizarJogo(id, dadosAtualizados);
         return res.status(200).json(jogoAtualizado);
     } catch (error) {
-        return res.status(400).json({ error: "Falha ao atualizar jogo", message: error.message });
+        next(error);
     }
 }
 
-async function deletarJogo(req, res) {
+async function deletarJogo(req, res, next) {
     try {
         const id = req.params.id;
         const jogoDeletado = await JogoService.deletarJogo(id);
-        return res.status(200).json({ jogoDeletado });
+        return res.status(200).json(jogoDeletado);
     } catch (error) {
-        return res.status(400).json({ error: "Falha ao deletar jogo", message: error.message });
+        next(error);
     }
 }
 
@@ -54,7 +53,7 @@ const JogoController = {
     getJogo,
     atualizarJogo,
     deletarJogo,
-    cadastrarJogo
+    cadastrarJogo,
 };
 
 export default JogoController;
