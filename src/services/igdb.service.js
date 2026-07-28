@@ -1,6 +1,5 @@
 import axios from "axios";
-
-//https://api-docs.igdb.com/
+import criarErro from "../utils/criarErro.js";
 
 let tokenAcesso = null;
 let expiracaoToken = 0;
@@ -10,30 +9,39 @@ async function getTokenAcesso() {
         return tokenAcesso;
     }
 
-    const res = await axios.post("https://id.twitch.tv/oauth2/token", null, {
-        params: {
-            client_id: process.env.TWITCH_CLIENT_ID,
-            client_secret: process.env.TWITCH_CLIENT_SECRET,
-            grant_type: "client_credentials",
-        },
-    });
+    try {
+        const res = await axios.post("https://id.twitch.tv/oauth2/token", null, {
+            params: {
+                client_id: process.env.TWITCH_CLIENT_ID,
+                client_secret: process.env.TWITCH_CLIENT_SECRET,
+                grant_type: "client_credentials",
+            },
+        });
 
-    tokenAcesso = res.data.access_token;
-    expiracaoToken = Date.now() + (res.data.expires_in - 60) * 1000;
-    return tokenAcesso;
+        tokenAcesso = res.data.access_token;
+        expiracaoToken = Date.now() + (res.data.expires_in - 60) * 1000;
+        return tokenAcesso;
+    } catch (error) {
+        throw criarErro("Erro ao autenticar com a IGDB/Twitch", 502);
+    }
 }
 
 async function igdbRequest(endpoint, query) {
     const token = await getTokenAcesso();
-    const res = await axios.post(`https://api.igdb.com/v4/${endpoint}`, query, {
-        headers: {
-            "Client-ID": process.env.TWITCH_CLIENT_ID,
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "text/plain",
-        },
-    });
 
-    return res.data;
+    try {
+        const res = await axios.post(`https://api.igdb.com/v4/${endpoint}`, query, {
+            headers: {
+                "Client-ID": process.env.TWITCH_CLIENT_ID,
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "text/plain",
+            },
+        });
+
+        return res.data;
+    } catch (error) {
+        throw criarErro("Erro ao consultar a IGDB", 502);
+    }
 }
 
 export default igdbRequest;

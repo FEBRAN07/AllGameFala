@@ -2,13 +2,6 @@ import JogoRepository from "../repositories/jogo.repository.js";
 import igdbRequest from "./igdb.service.js";
 import criarErro from "../utils/criarErro.js";
 
-async function verificarId(id) {
-    const jogo = await JogoRepository.buscarPorIdNosso(id);
-    if (!jogo) {
-        throw criarErro("Jogo não encontrado", 404);
-    }
-}
-
 async function buscarJogos(termoBusca) {
     const resultado = await igdbRequest(
         "games",
@@ -31,7 +24,9 @@ async function getOuCriarJogo(idIGDB) {
         `fields name,summary,cover.url,first_release_date,genres.name,platforms.name,involved_companies.developer,involved_companies.publisher,involved_companies.company.name; where id = ${idIGDB};`
     );
 
-    console.log(dados);
+    if (!dados) {
+        throw criarErro("Jogo não encontrado na IGDB", 404);
+    }
 
     jogo = await JogoRepository.criar({
         idIGDB: dados.id,
@@ -40,7 +35,7 @@ async function getOuCriarJogo(idIGDB) {
         publicadoras: dados.involved_companies?.filter((c) => c.publisher).map((c) => c.company.name) || [],
         sinopse: dados.summary,
         capa: dados.cover?.url,
-        dataLancamento: dados.first_release_date ? new Date(dados.first_release_date * 1000) : null,
+        dataLancamento: dados.first_release_date ? new Date(dados.first_release_date * 1000) : Date.now(),
         genero: dados.genres?.map((g) => g.name) || [],
         plataformas: dados.platforms?.map((p) => p.name) || [],
     });
@@ -49,14 +44,18 @@ async function getOuCriarJogo(idIGDB) {
 }
 
 async function atualizarJogo(id, dadosAtualizados) {
-    await verificarId(id);
     const jogoAtualizado = await JogoRepository.atualizarPorId(id, dadosAtualizados);
+    if (!jogoAtualizado) {
+        throw criarErro("Jogo não encontrado", 404);
+    }
     return jogoAtualizado;
 }
 
 async function deletarJogo(id) {
-    await verificarId(id);
     const jogoDeletado = await JogoRepository.deletarPorId(id);
+    if (!jogoDeletado) {
+        throw criarErro("Jogo não encontrado", 404);
+    }
     return jogoDeletado;
 }
 

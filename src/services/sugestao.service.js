@@ -18,8 +18,12 @@ async function validarDados(idUsuario, dados) {
 }
 
 async function criarSugestao(idUsuario, dados) {
-    validarDados(idUsuario, dados);
-    const sugestao = await SugestaoRepository.criar({ ...dados, usuario: idUsuario });
+    await validarDados(idUsuario, dados);
+    const sugestao = await SugestaoRepository.criar({
+        comentario: dados.comentario,
+        nomeJogo: dados.nomeJogo,
+        usuario: idUsuario,
+    });
     return sugestao;
 }
 
@@ -28,14 +32,19 @@ async function atualizarSugestao(id, status) {
         throw criarErro("Tipo do status deve ser bool", 400);
     }
     const sugestaoAtualizada = await SugestaoRepository.atualizarStatus(id, status);
+    if (!sugestaoAtualizada) {
+        throw criarErro("Sugestão não encontrada", 404);
+    }
     return sugestaoAtualizada;
 }
 
 async function deletarSugestao(id) {
     const sugestaoDeletada = await SugestaoRepository.deletar(id);
+    if (!sugestaoDeletada) {
+        throw criarErro("Sugestão não encontrada", 404);
+    }
     return sugestaoDeletada;
 }
-
 async function listarSugestoes() {
     const sugestoes = await SugestaoRepository.listar();
     return sugestoes;

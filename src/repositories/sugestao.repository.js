@@ -1,7 +1,7 @@
 import Sugestao from "../models/sugestao.model.js";
 
 async function criar(dados) {
-    const sugestao = (await Sugestao.create(dados)).populate("usuario", "nome");
+    const sugestao = await (await Sugestao.create(dados)).populate("usuario", "nome");
     return sugestao;
 }
 
