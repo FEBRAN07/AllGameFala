@@ -8,27 +8,34 @@ const reviewSchema = new mongoose.Schema(
             min: 0,
             max: 5,
         },
+
         comentario: {
             type: String,
             required: true,
+            trim: true,
+            maxlength: 2000,
         },
+
         dataReview: {
             type: Date,
             default: Date.now,
         },
+
         usuario: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Usuario",
             required: true,
         },
-        quantidadeLikes: {
-            type: Number,
-            default: 0,
-        },
+
         jogo: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Jogo",
             required: true,
+        },
+
+        quantidadeLikes: {
+            type: Number,
+            default: 0,
         },
     },
     {
