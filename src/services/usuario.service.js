@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
 
 import UsuarioRepository from "../repositories/usuario.repository.js";
+import ReviewService from "./review.service.js";
+import ComentarioService from "./comentario.service.js";
 
 import criarErro from "../utils/criarErro.js";
 
@@ -74,6 +76,9 @@ async function removerMinhaConta(idDoUsuario) {
     if (!usuarioDeletado) {
         throw criarErro("Usuário não encontrado.", 404);
     }
+
+    await ReviewService.removerPorUsuario(idDoUsuario);
+    await ComentarioService.removerPorUsuario(idDoUsuario);
 
     return { message: "Conta removida com sucesso." };
 }

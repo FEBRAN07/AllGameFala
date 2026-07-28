@@ -192,6 +192,24 @@ async function removerPorJogo(idJogo) {
     await ReviewRepository.deletarPorJogo(idJogo);
 }
 
+async function removerPorUsuario(idUsuario) {
+
+    const reviews = await ReviewRepository.listarPorUsuario(idUsuario);
+
+    const jogosAfetados = new Set();
+
+    for (const review of reviews) {
+        await ComentarioRepository.deletarPorReview(review._id);
+        jogosAfetados.add(review.jogo._id.toString());
+    }
+
+    await ReviewRepository.deletarPorUsuario(idUsuario);
+
+    for (const idJogo of jogosAfetados) {
+        await atualizarNotaMedia(idJogo);
+    }
+}
+
 const ReviewService = {
     criar,
     listarTodas,
@@ -203,6 +221,7 @@ const ReviewService = {
     curtir,
     descurtir,
     removerPorJogo,
+    removerPorUsuario,
 };
 
 export default ReviewService;

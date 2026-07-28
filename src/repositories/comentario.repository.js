@@ -38,6 +38,10 @@ async function deletarPorReview(idReview) {
     return await Comentario.deleteMany({ reviewComentada: idReview });
 }
 
+async function deletarPorUsuario(idUsuario) {
+    return await Comentario.deleteMany({ usuario: idUsuario });
+}
+
 async function adicionarLike(idComentario, idUsuario) {
     return await Comentario.findByIdAndUpdate(
         idComentario,
@@ -62,6 +66,7 @@ const ComentarioRepository = {
     atualizarPorId,
     deletarPorId,
     deletarPorReview,
+    deletarPorUsuario,
     adicionarLike,
     removerLike,
 };

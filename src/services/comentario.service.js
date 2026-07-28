@@ -119,6 +119,10 @@ async function descurtir(idUsuario, idComentario) {
     return await ComentarioRepository.removerLike(idComentario, idUsuario);
 }
 
+async function removerPorUsuario(idUsuario) {
+    await ComentarioRepository.deletarPorUsuario(idUsuario);
+}
+
 const ComentarioService = {
     criar,
     listarPorReview,
@@ -128,6 +132,7 @@ const ComentarioService = {
     remover,
     curtir,
     descurtir,
+    removerPorUsuario,
 };
 
 export default ComentarioService;
