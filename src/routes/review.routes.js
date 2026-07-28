@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import ReviewController from "../controllers/review.controller.js";
 import autenticar from "../middlewares/autenticacao.middleware.js";
-import apenasAdmin from "../middlewares/apenasAdmin.middleware.js";
+import apenasAdmin from "../middlewares/admin.middleware.js";
 
 const router = Router();
 
@@ -45,11 +45,6 @@ router.delete("/:id", autenticar, ReviewController.remover);
 |--------------------------------------------------------------------------
 */
 
-router.get(
-    "/admin/todas",
-    autenticar,
-    apenasAdmin,
-    ReviewController.listarTodas
-);
+router.get("/admin/todas", autenticar, apenasAdmin, ReviewController.listarTodas);
 
 export default router;
