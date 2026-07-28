@@ -1,5 +1,6 @@
 import ReviewRepository from "../repositories/review.repository.js";
 import JogoRepository from "../repositories/jogo.repository.js";
+import ComentarioRepository from "../repositories/comentario.repository.js";
 import criarErro from "../utils/criarErro.js";
 
 async function atualizarNotaMedia(idJogo) {
@@ -135,6 +136,8 @@ async function remover(idUsuario, idReview) {
 
     const idJogo = review.jogo._id;
 
+    await ComentarioRepository.deletarPorReview(idReview);
+
     await ReviewRepository.deletarPorId(idReview);
 
     await atualizarNotaMedia(idJogo);
@@ -178,6 +181,17 @@ async function descurtir(idUsuario, idReview) {
     return await ReviewRepository.removerLike(idReview, idUsuario);
 }
 
+async function removerPorJogo(idJogo) {
+
+    const reviews = await ReviewRepository.listarPorJogo(idJogo);
+
+    for (const review of reviews) {
+        await ComentarioRepository.deletarPorReview(review._id);
+    }
+
+    await ReviewRepository.deletarPorJogo(idJogo);
+}
+
 const ReviewService = {
     criar,
     listarTodas,
@@ -188,6 +202,7 @@ const ReviewService = {
     remover,
     curtir,
     descurtir,
+    removerPorJogo,
 };
 
 export default ReviewService;

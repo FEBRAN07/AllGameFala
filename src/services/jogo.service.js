@@ -1,4 +1,5 @@
 import JogoRepository from "../repositories/jogo.repository.js";
+import ReviewService from "./review.service.js";
 import igdbRequest from "./igdb.service.js";
 import criarErro from "../utils/criarErro.js";
 
@@ -56,6 +57,9 @@ async function deletarJogo(id) {
     if (!jogoDeletado) {
         throw criarErro("Jogo não encontrado", 404);
     }
+
+    await ReviewService.removerPorJogo(id);
+
     return jogoDeletado;
 }
 

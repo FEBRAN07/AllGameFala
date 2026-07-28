@@ -44,6 +44,10 @@ async function deletarPorId(id) {
     return await Review.findByIdAndDelete(id);
 }
 
+async function deletarPorJogo(idJogo) {
+    return await Review.deleteMany({ jogo: idJogo });
+}
+
 async function adicionarLike(idReview, idUsuario) {
     return await Review.findByIdAndUpdate(
         idReview,
@@ -72,6 +76,7 @@ const ReviewRepository = {
     buscarPorId,
     atualizarPorId,
     deletarPorId,
+    deletarPorJogo,
     adicionarLike,
     removerLike,
 };
