@@ -1,0 +1,153 @@
+import ReviewRepository from "../repositories/review.repository.js";
+import JogoRepository from "../repositories/jogo.repository.js";
+import criarErro from "../utils/criarErro.js";
+
+async function atualizarNotaMedia(idJogo) {
+
+    const reviews = await ReviewRepository.listarPorJogo(idJogo);
+
+    if (reviews.length === 0) {
+
+        const jogo = await JogoRepository.buscarPorId(idJogo);
+
+        jogo.notaMedia = 0;
+
+        await JogoRepository.salvar(jogo);
+
+        return;
+    }
+
+    const soma = reviews.reduce((acc, review) => acc + review.nota, 0);
+
+    const media = Number((soma / reviews.length).toFixed(2));
+
+    const jogo = await JogoRepository.buscarPorId(idJogo);
+
+    jogo.notaMedia = media;
+
+    await JogoRepository.salvar(jogo);
+}
+
+async function criar(idUsuario, dados) {
+
+    const { jogo, nota, comentario } = dados;
+
+    if (nota < 0 || nota > 5) {
+        throw criarErro("A nota deve estar entre 0 e 5.", 400);
+    }
+
+    const jogoEncontrado = await JogoRepository.buscarPorId(jogo);
+
+    if (!jogoEncontrado) {
+        throw criarErro("Jogo não encontrado.", 404);
+    }
+
+    const review = await ReviewRepository.criar({
+        usuario: idUsuario,
+        jogo,
+        nota,
+        comentario
+    });
+
+    await atualizarNotaMedia(jogo);
+
+    return review;
+}
+
+async function listarTodas() {
+    return await ReviewRepository.listarTodas();
+}
+
+async function listarPorJogo(idJogo) {
+
+    const jogo = await JogoRepository.buscarPorId(idJogo);
+
+    if (!jogo) {
+        throw criarErro("Jogo não encontrado.", 404);
+    }
+
+    return await ReviewRepository.listarPorJogo(idJogo);
+}
+
+async function listarPorUsuario(idUsuario) {
+
+    return await ReviewRepository.listarPorUsuario(idUsuario);
+
+}
+
+async function buscarPorId(idReview) {
+
+    const review = await ReviewRepository.buscarPorId(idReview);
+
+    if (!review) {
+        throw criarErro("Review não encontrada.", 404);
+    }
+
+    return review;
+}
+
+async function atualizar(idUsuario, idReview, dados) {
+
+    const review = await ReviewRepository.buscarPorId(idReview);
+
+    if (!review) {
+        throw criarErro("Review não encontrada.", 404);
+    }
+
+    if (review.usuario._id.toString() !== idUsuario) {
+        throw criarErro("Você não pode editar esta review.", 403);
+    }
+
+    if (dados.nota !== undefined) {
+
+        if (dados.nota < 0 || dados.nota > 5) {
+            throw criarErro("A nota deve estar entre 0 e 5.", 400);
+        }
+
+        review.nota = dados.nota;
+    }
+
+    if (dados.comentario !== undefined) {
+        review.comentario = dados.comentario;
+    }
+
+    const reviewAtualizada = await ReviewRepository.atualizarPorId(
+        idReview,
+        review
+    );
+
+    await atualizarNotaMedia(review.jogo._id);
+
+    return reviewAtualizada;
+}
+
+async function remover(idUsuario, idReview) {
+
+    const review = await ReviewRepository.buscarPorId(idReview);
+
+    if (!review) {
+        throw criarErro("Review não encontrada.", 404);
+    }
+
+    if (review.usuario._id.toString() !== idUsuario) {
+        throw criarErro("Você não pode excluir esta review.", 403);
+    }
+
+    const idJogo = review.jogo._id;
+
+    await ReviewRepository.deletarPorId(idReview);
+
+    await atualizarNotaMedia(idJogo);
+}
+
+const ReviewService = {
+    criar,
+    listarTodas,
+    listarPorJogo,
+    listarPorUsuario,
+    buscarPorId,
+    atualizar,
+    remover,
+};
+
+export default ReviewService;
