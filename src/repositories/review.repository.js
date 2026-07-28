@@ -72,6 +72,13 @@ async function removerLike(idReview, idUsuario) {
         .populate("jogo", "titulo capa");
 }
 
+async function buscarUltimaPorUsuarioEJogo(idUsuario, idJogo) {
+    return await Review.findOne({ usuario: idUsuario, jogo: idJogo }).sort({
+        createdAt: -1,
+    });
+}
+
+
 const ReviewRepository = {
     criar,
     listarTodas,
