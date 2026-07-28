@@ -3,6 +3,7 @@ import { Router } from "express";
 import ReviewController from "../controllers/review.controller.js";
 import autenticar from "../middlewares/autenticacao.middleware.js";
 import apenasAdmin from "../middlewares/admin.middleware.js";
+import ReviewValidacaoMiddleware from "../middlewares/review.validacao.middleware.js";
 
 const router = Router();
 
@@ -22,7 +23,7 @@ router.get("/jogo/:idJogo", ReviewController.listarPorJogo);
 router.get("/usuario/:idUsuario", ReviewController.listarPorUsuario);
 
 // Busca uma review específica
-router.get("/:id", ReviewController.buscarPorId);
+router.get("/:id", ReviewValidacaoMiddleware.validarIdReview, ReviewController.buscarPorId);
 
 /*
 |--------------------------------------------------------------------------
@@ -31,19 +32,25 @@ router.get("/:id", ReviewController.buscarPorId);
 */
 
 // Criar review
-router.post("/", autenticar, ReviewController.criar);
+router.post("/", autenticar, ReviewValidacaoMiddleware.validarCriacao, ReviewController.criar);
 
 // Atualizar review (somente dono)
-router.patch("/:id", autenticar, ReviewController.atualizar);
+router.patch(
+    "/:id",
+    autenticar,
+    ReviewValidacaoMiddleware.validarIdReview,
+    ReviewValidacaoMiddleware.validarAtualizacao,
+    ReviewController.atualizar
+);
 
 // Excluir review (somente dono)
-router.delete("/:id", autenticar, ReviewController.remover);
+router.delete("/:id", autenticar, ReviewValidacaoMiddleware.validarIdReview, ReviewController.remover);
 
 // Curtir review
-router.post("/:id/like", autenticar, ReviewController.curtir);
+router.post("/:id/like", autenticar, ReviewValidacaoMiddleware.validarIdReview, ReviewController.curtir);
 
 // Descurtir review
-router.delete("/:id/like", autenticar, ReviewController.descurtir);
+router.delete("/:id/like", autenticar, ReviewValidacaoMiddleware.validarIdReview, ReviewController.descurtir);
 
 /*
 |--------------------------------------------------------------------------
