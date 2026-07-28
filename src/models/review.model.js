@@ -33,15 +33,23 @@ const reviewSchema = new mongoose.Schema(
             required: true,
         },
 
-        quantidadeLikes: {
-            type: Number,
-            default: 0,
-        },
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Usuario",
+            },
+        ],
     },
     {
         timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 );
+
+reviewSchema.virtual("quantidadeLikes").get(function () {
+    return this.likes.length;
+});
 
 const Review = mongoose.model("Review", reviewSchema);
 

@@ -44,6 +44,26 @@ async function deletarPorId(id) {
     return await Review.findByIdAndDelete(id);
 }
 
+async function adicionarLike(idReview, idUsuario) {
+    return await Review.findByIdAndUpdate(
+        idReview,
+        { $addToSet: { likes: idUsuario } },
+        { new: true }
+    )
+        .populate("usuario", "nome fotoPerfil")
+        .populate("jogo", "titulo capa");
+}
+
+async function removerLike(idReview, idUsuario) {
+    return await Review.findByIdAndUpdate(
+        idReview,
+        { $pull: { likes: idUsuario } },
+        { new: true }
+    )
+        .populate("usuario", "nome fotoPerfil")
+        .populate("jogo", "titulo capa");
+}
+
 const ReviewRepository = {
     criar,
     listarTodas,
@@ -52,6 +72,8 @@ const ReviewRepository = {
     buscarPorId,
     atualizarPorId,
     deletarPorId,
+    adicionarLike,
+    removerLike,
 };
 
 export default ReviewRepository;

@@ -39,6 +39,12 @@ router.patch("/:id", autenticar, ReviewController.atualizar);
 // Excluir review (somente dono)
 router.delete("/:id", autenticar, ReviewController.remover);
 
+// Curtir review
+router.post("/:id/like", autenticar, ReviewController.curtir);
+
+// Descurtir review
+router.delete("/:id/like", autenticar, ReviewController.descurtir);
+
 /*
 |--------------------------------------------------------------------------
 | Rota administrativa

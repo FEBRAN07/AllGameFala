@@ -106,6 +106,36 @@ async function remover(req, res, next) {
     }
 }
 
+async function curtir(req, res, next) {
+    try {
+
+        const review = await ReviewService.curtir(
+            req.usuario.id,
+            req.params.id
+        );
+
+        return res.status(200).json(review);
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+async function descurtir(req, res, next) {
+    try {
+
+        const review = await ReviewService.descurtir(
+            req.usuario.id,
+            req.params.id
+        );
+
+        return res.status(200).json(review);
+
+    } catch (error) {
+        next(error);
+    }
+}
+
 const ReviewController = {
     criar,
     listarTodas,
@@ -114,6 +144,8 @@ const ReviewController = {
     buscarPorId,
     atualizar,
     remover,
+    curtir,
+    descurtir,
 };
 
 export default ReviewController;

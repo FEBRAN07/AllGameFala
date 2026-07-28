@@ -140,6 +140,44 @@ async function remover(idUsuario, idReview) {
     await atualizarNotaMedia(idJogo);
 }
 
+async function curtir(idUsuario, idReview) {
+
+    const review = await ReviewRepository.buscarPorId(idReview);
+
+    if (!review) {
+        throw criarErro("Review não encontrada.", 404);
+    }
+
+    const jaCurtiu = review.likes.some(
+        (idLike) => idLike.toString() === idUsuario
+    );
+
+    if (jaCurtiu) {
+        throw criarErro("Você já curtiu esta review.", 400);
+    }
+
+    return await ReviewRepository.adicionarLike(idReview, idUsuario);
+}
+
+async function descurtir(idUsuario, idReview) {
+
+    const review = await ReviewRepository.buscarPorId(idReview);
+
+    if (!review) {
+        throw criarErro("Review não encontrada.", 404);
+    }
+
+    const curtiu = review.likes.some(
+        (idLike) => idLike.toString() === idUsuario
+    );
+
+    if (!curtiu) {
+        throw criarErro("Você ainda não curtiu esta review.", 400);
+    }
+
+    return await ReviewRepository.removerLike(idReview, idUsuario);
+}
+
 const ReviewService = {
     criar,
     listarTodas,
@@ -148,6 +186,8 @@ const ReviewService = {
     buscarPorId,
     atualizar,
     remover,
+    curtir,
+    descurtir,
 };
 
 export default ReviewService;
