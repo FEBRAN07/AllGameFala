@@ -20,15 +20,23 @@ const comentarioSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
         },
-        quantidadeLikes: {
-            type: Number,
-            default: 0,
-        },
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Usuario",
+            },
+        ],
     },
     {
         timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 );
+
+comentarioSchema.virtual("quantidadeLikes").get(function () {
+    return this.likes.length;
+});
 
 const Comentario = mongoose.model("Comentario", comentarioSchema);
 

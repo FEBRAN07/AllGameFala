@@ -12,6 +12,8 @@ import sugestaoRoutes from "./routes/sugestao.routes.js";
 
 import reviewRoutes from "./routes/review.routes.js";
 
+import comentarioRoutes from "./routes/comentario.routes.js";
+
 import criarErro from "./utils/criarErro.js";
 
 const app = express();
@@ -31,6 +33,8 @@ app.use("/api/jogos", jogoRoutes);
 app.use("/api/sugestao", sugestaoRoutes);
 
 app.use("/api/reviews", reviewRoutes);
+
+app.use("/api/comentarios", comentarioRoutes);
 
 app.use((req, res, next) => {
     return next(criarErro("Rota não encontrada.", 404));
