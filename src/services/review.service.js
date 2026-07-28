@@ -8,7 +8,7 @@ async function atualizarNotaMedia(idJogo) {
 
     if (reviews.length === 0) {
 
-        const jogo = await JogoRepository.buscarPorId(idJogo);
+        const jogo = await JogoRepository.buscarPorIdNosso(idJogo);
 
         jogo.notaMedia = 0;
 
@@ -21,7 +21,7 @@ async function atualizarNotaMedia(idJogo) {
 
     const media = Number((soma / reviews.length).toFixed(2));
 
-    const jogo = await JogoRepository.buscarPorId(idJogo);
+    const jogo = await JogoRepository.buscarPorIdNosso(idJogo);
 
     jogo.notaMedia = media;
 
@@ -36,7 +36,7 @@ async function criar(idUsuario, dados) {
         throw criarErro("A nota deve estar entre 0 e 5.", 400);
     }
 
-    const jogoEncontrado = await JogoRepository.buscarPorId(jogo);
+    const jogoEncontrado = await JogoRepository.buscarPorIdNosso(jogo);
 
     if (!jogoEncontrado) {
         throw criarErro("Jogo não encontrado.", 404);

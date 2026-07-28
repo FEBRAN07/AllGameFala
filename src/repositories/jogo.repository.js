@@ -4,6 +4,10 @@ async function criar(dados) {
     return await Jogo.create(dados);
 }
 
+async function salvar(jogo) {
+    return await jogo.save();
+}
+
 async function atualizarPorId(id, dados) {
     return await Jogo.findByIdAndUpdate(id, dados, {
         new: true,
@@ -29,6 +33,7 @@ const JogoRepository = {
     buscarPorIdNosso,
     deletarPorId,
     atualizarPorId,
+    salvar,
 };
 
 export default JogoRepository;
