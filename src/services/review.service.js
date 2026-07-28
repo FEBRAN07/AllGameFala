@@ -60,7 +60,7 @@ async function listarTodas() {
 
 async function listarPorJogo(idJogo) {
 
-    const jogo = await JogoRepository.buscarPorId(idJogo);
+    const jogo = await JogoRepository.buscarPorIdNosso(idJogo);
 
     if (!jogo) {
         throw criarErro("Jogo não encontrado.", 404);
