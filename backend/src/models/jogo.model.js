@@ -6,6 +6,7 @@ const jogoSchema = new mongoose.Schema(
             type: Number,
             unique: true,
             index: true,
+            sparse: true,
         },
 
         titulo: {

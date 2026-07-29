@@ -10,7 +10,16 @@ function erroMiddleware(error, req, res, next) {
     }
 
     if (error.code === 11000) {
-        return res.status(409).json({ message: "Email já cadastrado." });
+        const campo = error.keyValue ? Object.keys(error.keyValue)[0] : null;
+
+        const mensagens = {
+            email: "Email já cadastrado.",
+            idIGDB: "Este jogo já está cadastrado.",
+        };
+
+        const message = mensagens[campo] || `Valor duplicado para o campo '${campo}'.`;
+
+        return res.status(409).json({ message });
     }
 
     let status = error.status;
