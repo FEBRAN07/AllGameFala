@@ -50,7 +50,20 @@ API didática em **Node.js**, **Express**, **MongoDB**, **Mongoose**, **JWT** e 
 
 ## Visão Geral
 
-Este repositório é uma base pronta para criar APIs com autenticação e organização profissional. Ele foi pensado para estudantes e times que querem começar um projeto sem perder tempo repetindo a estrutura inicial.
+Esta API é um sistema de review e comentários de jogos que combina cadastro e login com conteúdo colaborativo.
+
+É possível buscar jogos, criar e atualizar reviews, curtir e descurtir avaliações, comentar em reviews, sugerir novos jogos e gerenciar conteúdo como administrador.
+
+### Ideia do projeto
+
+O projeto serve como backend para um site ou app de games onde:
+- usuários se cadastram e fazem login com JWT;
+- jogos podem ser buscados via IGDB e salvos localmente no banco;
+- usuários escrevem reviews com nota e comentário;
+- reviews podem receber likes e serem editadas/deletadas pelo autor;
+- usuários comentam em reviews e curtem comentários;
+- sugestões de novos jogos são enviadas por usuários e aprovadas/excluídas por admin;
+- administradores gerenciam jogos e aprovam sugestões.
 
 Ele já entrega:
 
@@ -58,13 +71,14 @@ Ele já entrega:
 | --- | --- |
 | API Express | Servidor HTTP com rotas registradas e JSON habilitado |
 | Arquitetura MVC | Separação entre rotas, controllers, services, repositories e models |
-| MongoDB + Mongoose | Conexão centralizada e model de usuário |
-| Cadastro | Criação de usuário com validação e hash de senha |
-| Login | Validação de credenciais e geração de token JWT |
-| Rotas protegidas | Middleware que valida `Authorization: Bearer TOKEN` |
-| Segurança de senha | Uso de `bcryptjs` para salvar apenas `senhaHash` |
+| MongoDB + Mongoose | Conexão centralizada e modelos para usuário, jogo, review, comentário e sugestão |
+| Autenticação JWT | Cadastro/login e rotas protegidas com token Bearer |
+| Usuários | Cadastro com hash de senha e perfil protegido |
+| Gestão de jogos | Busca IGDB, cadastro local e consulta por ID |
+| Reviews de jogos | Criar, listar, editar, excluir, curtir e descurtir |
+| Comentários em reviews | Criar, listar, editar, excluir, curtir e descurtir |
+| Sugestões | Envio de sugestões de jogos e administração de status |
 | Tratamento de erros | Middleware central para respostas padronizadas |
-| Testes manuais | Postman Desktop, Web ou extensão do VS Code |
 | Deploy | `render.yaml` pronto para publicar no Render |
 
 ---
@@ -164,20 +178,46 @@ Isso acontece porque o `package.json` contém:
 │   │   └── database.js
 │   ├── controllers/
 │   │   ├── auth.controller.js
+│   │   ├── comentario.controller.js
+│   │   ├── jogo.controller.js
+│   │   ├── review.controller.js
+│   │   ├── sugestao.controller.js
 │   │   └── usuario.controller.js
 │   ├── middlewares/
+│   │   ├── admin.middleware.js
 │   │   ├── autenticacao.middleware.js
 │   │   ├── erro.middleware.js
-│   │   └── validarCampos.middleware.js
+│   │   ├── validarCampos.middleware.js
+│   │   ├── validarComentario.middleware.js
+│   │   ├── validarJogo.middleware.js
+│   │   ├── validarReview.middleware.js
+│   │   └── validarSugestao.middleware.js
 │   ├── models/
+│   │   ├── comentario.model.js
+│   │   ├── jogo.model.js
+│   │   ├── review.model.js
+│   │   ├── sugestao.model.js
 │   │   └── usuario.model.js
 │   ├── repositories/
+│   │   ├── comentario.repository.js
+│   │   ├── jogo.repository.js
+│   │   ├── review.repository.js
+│   │   ├── sugestao.repository.js
 │   │   └── usuario.repository.js
 │   ├── routes/
 │   │   ├── auth.routes.js
+│   │   ├── comentario.routes.js
+│   │   ├── jogo.routes.js
+│   │   ├── review.routes.js
+│   │   ├── sugestao.routes.js
 │   │   └── usuario.routes.js
 │   ├── services/
 │   │   ├── auth.service.js
+│   │   ├── comentario.service.js
+│   │   ├── igdb.service.js
+│   │   ├── jogo.service.js
+│   │   ├── review.service.js
+│   │   ├── sugestao.service.js
 │   │   └── usuario.service.js
 │   └── utils/
 │       └── criarErro.js
