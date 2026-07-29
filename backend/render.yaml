@@ -3,7 +3,7 @@ services:
   # Cada item em services representa uma aplicação publicada.
   - type: web
     # Nome que aparecerá no painel do Render.
-    name: lionsdev-api-mvc-boilerplate
+    name: projeto-lions-backloggd
     # Informa que o projeto roda com Node.js.
     runtime: node
     # Plano gratuito, ideal para aula e testes.
@@ -27,7 +27,8 @@ services:
         generateValue: true
       # Tempo de validade do token JWT.
       - key: JWT_EXPIRES_IN
-        value: "1d"
+        value: "7d"
       # Custo usado pelo bcrypt para gerar hash da senha.
       - key: BCRYPT_SALT_ROUNDS
         value: "10"
+      - key: 
