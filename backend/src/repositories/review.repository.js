@@ -26,9 +26,7 @@ async function listarPorUsuario(idUsuario) {
 }
 
 async function buscarPorId(id) {
-    return await Review.findById(id)
-        .populate("usuario", "nome fotoPerfil")
-        .populate("jogo", "titulo capa");
+    return await Review.findById(id).populate("usuario", "nome fotoPerfil").populate("jogo", "titulo capa");
 }
 
 async function atualizarPorId(id, dados) {
@@ -53,21 +51,13 @@ async function deletarPorUsuario(idUsuario) {
 }
 
 async function adicionarLike(idReview, idUsuario) {
-    return await Review.findByIdAndUpdate(
-        idReview,
-        { $addToSet: { likes: idUsuario } },
-        { new: true }
-    )
+    return await Review.findByIdAndUpdate(idReview, { $addToSet: { likes: idUsuario } }, { new: true })
         .populate("usuario", "nome fotoPerfil")
         .populate("jogo", "titulo capa");
 }
 
 async function removerLike(idReview, idUsuario) {
-    return await Review.findByIdAndUpdate(
-        idReview,
-        { $pull: { likes: idUsuario } },
-        { new: true }
-    )
+    return await Review.findByIdAndUpdate(idReview, { $pull: { likes: idUsuario } }, { new: true })
         .populate("usuario", "nome fotoPerfil")
         .populate("jogo", "titulo capa");
 }
@@ -77,7 +67,6 @@ async function buscarUltimaPorUsuarioEJogo(idUsuario, idJogo) {
         createdAt: -1,
     });
 }
-
 
 const ReviewRepository = {
     criar,
@@ -91,6 +80,7 @@ const ReviewRepository = {
     deletarPorUsuario,
     adicionarLike,
     removerLike,
+    buscarUltimaPorUsuarioEJogo,
 };
 
 export default ReviewRepository;
