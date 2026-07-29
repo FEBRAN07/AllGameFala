@@ -62,9 +62,36 @@ async function deletarJogo(id) {
 
     return jogoDeletado;
 }
+async function listarJogos(query) {
+    const pagina = Math.max(parseInt(query.pagina) || 1, 1);
+    const limite = Math.min(Math.max(parseInt(query.limite) || 20, 1), 100);
+    const skip = (pagina - 1) * limite;
+
+    const filtro = {};
+    if (query.genero) filtro.genero = query.genero;
+    if (query.plataforma) filtro.plataformas = query.plataforma;
+
+    const camposOrdenacao = ["notaMedia", "dataLancamento", "titulo", "quantidadeReviews"];
+    const campo = camposOrdenacao.includes(query.ordenarPor) ? query.ordenarPor : "dataLancamento";
+    const direcao = query.ordem === "asc" ? 1 : -1;
+    const ordenacao = { [campo]: direcao };
+
+    const { jogos, total } = await JogoRepository.listar({ filtro, skip, limite, ordenacao });
+    
+    return {
+        jogos,
+        paginacao: {
+            paginaAtual: pagina,
+            totalPaginas: Math.ceil(total / limite),
+            totalItens: total,
+            limite,
+        },
+    };
+}
 
 const JogoService = {
     buscarJogos,
+    listarJogos,
     getOuCriarJogo,
     atualizarJogo,
     deletarJogo,

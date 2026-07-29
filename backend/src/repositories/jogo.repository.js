@@ -27,6 +27,15 @@ async function buscarPorIdNosso(id) {
     return await Jogo.findById(id);
 }
 
+async function listar({ filtro, skip, limite, ordenacao }) {
+    const [jogos, total] = await Promise.all([
+        Jogo.find(filtro).sort(ordenacao).skip(skip).limit(limite),
+        Jogo.countDocuments(filtro),
+    ]);
+
+    return { jogos, total };
+}
+
 const JogoRepository = {
     criar,
     buscarPorIdIGDB,
@@ -34,6 +43,7 @@ const JogoRepository = {
     deletarPorId,
     atualizarPorId,
     salvar,
+    listar,
 };
 
 export default JogoRepository;

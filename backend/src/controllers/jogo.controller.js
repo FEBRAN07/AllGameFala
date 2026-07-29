@@ -48,8 +48,18 @@ async function deletarJogo(req, res, next) {
     }
 }
 
+async function listar(req, res, next) {
+    try {
+        const resultado = await JogoService.listarJogos(req.query);
+        return res.status(200).json(resultado);
+    } catch (error) {
+        next(error);
+    }
+}
+
 const JogoController = {
     buscar,
+    listar,
     getJogo,
     atualizarJogo,
     deletarJogo,
