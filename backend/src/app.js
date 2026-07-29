@@ -21,7 +21,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    return res.status(200).json({ message: "Boilerplate API MVC está rodando." });
+    return res.status(200).json({ message: "Projeto rodando." });
 });
 
 app.use("/api/auth", authRoutes);
