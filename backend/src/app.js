@@ -36,6 +36,8 @@ app.use("/api/reviews", reviewRoutes);
 
 app.use("/api/comentarios", comentarioRoutes);
 
+app.use("/public", express.static("public"));
+
 app.use((req, res, next) => {
     return next(criarErro("Rota não encontrada.", 404));
 });

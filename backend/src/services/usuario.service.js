@@ -49,6 +49,15 @@ async function atualizarPerfil(idDoUsuario, dados) {
         dadosAtualizados.nome = dados.nome.trim();
     }
 
+    if (dados.fotoPerfil) {
+        try {
+            new URL(dados.fotoPerfil);
+        } catch {
+            throw criarErro("URL da foto inválida.", 400);
+        }
+            dadosAtualizados.fotoPerfil = dados.fotoPerfil;
+    }
+
     if (dados.senha) {
         validarSenha(dados.senha);
 

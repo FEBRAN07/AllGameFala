@@ -35,6 +35,11 @@ const UsuarioSchema = new mongoose.Schema(
             enum: ["usuario", "admin"],
             default: "usuario",
         },
+
+        fotoPerfil: {
+        type: String,
+        default: "/public/images/default-avatar.jpg",
+        },
     },
     {
         timestamps: true,
