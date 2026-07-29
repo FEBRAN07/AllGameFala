@@ -1,4 +1,4 @@
-# BacklogGD
+# AllGameFala
 
 Backend de uma plataforma de avaliações de jogos inspirada em Backloggd e Metacritic. A API permite consultar jogos na IGDB, montar um catálogo local, publicar avaliações e comentários, registrar curtidas e receber sugestões da comunidade.
 
@@ -111,48 +111,48 @@ Content-Type: application/json
 
 ### Autenticação e usuário
 
-| Método | Rota | Acesso | Descrição |
-| --- | --- | --- | --- |
-| POST | `/api/auth/cadastro` | Público | Cria uma conta e retorna usuário e token. |
-| POST | `/api/auth/login` | Público | Autentica e retorna usuário e token. |
-| GET | `/api/usuarios/perfil` | 🔒 | Retorna o perfil do usuário autenticado. |
-| PATCH | `/api/usuarios/perfil` | 🔒 | Atualiza `nome` e/ou `senha`. |
-| DELETE | `/api/usuarios/perfil` | 🔒 | Remove a conta, suas avaliações e seus comentários. |
+| Método | Rota                   | Acesso  | Descrição                                           |
+| ------ | ---------------------- | ------- | --------------------------------------------------- |
+| POST   | `/api/auth/cadastro`   | Público | Cria uma conta e retorna usuário e token.           |
+| POST   | `/api/auth/login`      | Público | Autentica e retorna usuário e token.                |
+| GET    | `/api/usuarios/perfil` | 🔒      | Retorna o perfil do usuário autenticado.            |
+| PATCH  | `/api/usuarios/perfil` | 🔒      | Atualiza `nome` e/ou `senha`.                       |
+| DELETE | `/api/usuarios/perfil` | 🔒      | Remove a conta, suas avaliações e seus comentários. |
 
 ### Jogos
 
-| Método | Rota | Acesso | Descrição |
-| --- | --- | --- | --- |
-| GET | `/api/jogos/buscar?q=zelda` | Público | Busca até 50 jogos na IGDB. |
-| GET | `/api/jogos/:idIGDB` | Público | Retorna o jogo local ou o importa da IGDB pelo ID. |
-| POST | `/api/jogos` | 👑 | Cadastra um jogo manualmente. |
-| PATCH | `/api/jogos/:id` | 👑 | Atualiza dados do jogo local. |
-| DELETE | `/api/jogos/:id` | 👑 | Exclui o jogo, suas avaliações e os comentários delas. |
+| Método | Rota                        | Acesso  | Descrição                                              |
+| ------ | --------------------------- | ------- | ------------------------------------------------------ |
+| GET    | `/api/jogos/buscar?q=zelda` | Público | Busca até 50 jogos na IGDB.                            |
+| GET    | `/api/jogos/:idIGDB`        | Público | Retorna o jogo local ou o importa da IGDB pelo ID.     |
+| POST   | `/api/jogos`                | 👑      | Cadastra um jogo manualmente.                          |
+| PATCH  | `/api/jogos/:id`            | 👑      | Atualiza dados do jogo local.                          |
+| DELETE | `/api/jogos/:id`            | 👑      | Exclui o jogo, suas avaliações e os comentários delas. |
 
 No cadastro manual de jogo, são obrigatórios `titulo`, `desenvolvedor`, `publicadoras`, `dataLancamento`, `plataformas`, `genero` e `sinopse`. Os campos de desenvolvedor, publicadoras, plataformas e gênero são listas de textos.
 
 ### Avaliações
 
-| Método | Rota | Acesso | Descrição |
-| --- | --- | --- | --- |
-| GET | `/api/reviews` | Público | Lista todas as avaliações. |
-| GET | `/api/reviews/jogo/:idJogo` | Público | Lista avaliações de um jogo local. |
-| GET | `/api/reviews/usuario/:idUsuario` | Público | Lista avaliações de um usuário. |
-| GET | `/api/reviews/:id` | Público | Retorna uma avaliação. |
-| POST | `/api/reviews` | 🔒 | Cria uma avaliação. |
-| PATCH | `/api/reviews/:id` | 🔒 | Edita a própria avaliação. |
-| DELETE | `/api/reviews/:id` | 🔒 | Exclui a própria avaliação e seus comentários. |
-| POST | `/api/reviews/:id/like` | 🔒 | Curte uma avaliação. |
-| DELETE | `/api/reviews/:id/like` | 🔒 | Remove a curtida de uma avaliação. |
-| GET | `/api/reviews/admin/todas` | 👑 | Lista todas as avaliações. |
+| Método | Rota                              | Acesso  | Descrição                                      |
+| ------ | --------------------------------- | ------- | ---------------------------------------------- |
+| GET    | `/api/reviews`                    | Público | Lista todas as avaliações.                     |
+| GET    | `/api/reviews/jogo/:idJogo`       | Público | Lista avaliações de um jogo local.             |
+| GET    | `/api/reviews/usuario/:idUsuario` | Público | Lista avaliações de um usuário.                |
+| GET    | `/api/reviews/:id`                | Público | Retorna uma avaliação.                         |
+| POST   | `/api/reviews`                    | 🔒      | Cria uma avaliação.                            |
+| PATCH  | `/api/reviews/:id`                | 🔒      | Edita a própria avaliação.                     |
+| DELETE | `/api/reviews/:id`                | 🔒      | Exclui a própria avaliação e seus comentários. |
+| POST   | `/api/reviews/:id/like`           | 🔒      | Curte uma avaliação.                           |
+| DELETE | `/api/reviews/:id/like`           | 🔒      | Remove a curtida de uma avaliação.             |
+| GET    | `/api/reviews/admin/todas`        | 👑      | Lista todas as avaliações.                     |
 
 Exemplo de criação:
 
 ```json
 {
-  "jogo": "<id-do-jogo-no-mongodb>",
-  "nota": 4.5,
-  "comentario": "Uma aventura marcante, com excelente direção de arte."
+    "jogo": "<id-do-jogo-no-mongodb>",
+    "nota": 4.5,
+    "comentario": "Uma aventura marcante, com excelente direção de arte."
 }
 ```
 
@@ -160,34 +160,34 @@ A nota aceita valores de 0 a 5 e o comentário comporta até 2.000 caracteres. A
 
 ### Comentários
 
-| Método | Rota | Acesso | Descrição |
-| --- | --- | --- | --- |
-| GET | `/api/comentarios/review/:idReview` | Público | Lista comentários de uma avaliação. |
-| GET | `/api/comentarios/usuario/:idUsuario` | Público | Lista comentários de um usuário. |
-| GET | `/api/comentarios/:id` | Público | Retorna um comentário. |
-| POST | `/api/comentarios/review/:idReview` | 🔒 | Cria comentário em uma avaliação. |
-| PATCH | `/api/comentarios/:id` | 🔒 | Edita o próprio comentário. |
-| DELETE | `/api/comentarios/:id` | 🔒 | Exclui o próprio comentário. |
-| POST | `/api/comentarios/:id/like` | 🔒 | Curte um comentário. |
-| DELETE | `/api/comentarios/:id/like` | 🔒 | Remove a curtida de um comentário. |
+| Método | Rota                                  | Acesso  | Descrição                           |
+| ------ | ------------------------------------- | ------- | ----------------------------------- |
+| GET    | `/api/comentarios/review/:idReview`   | Público | Lista comentários de uma avaliação. |
+| GET    | `/api/comentarios/usuario/:idUsuario` | Público | Lista comentários de um usuário.    |
+| GET    | `/api/comentarios/:id`                | Público | Retorna um comentário.              |
+| POST   | `/api/comentarios/review/:idReview`   | 🔒      | Cria comentário em uma avaliação.   |
+| PATCH  | `/api/comentarios/:id`                | 🔒      | Edita o próprio comentário.         |
+| DELETE | `/api/comentarios/:id`                | 🔒      | Exclui o próprio comentário.        |
+| POST   | `/api/comentarios/:id/like`           | 🔒      | Curte um comentário.                |
+| DELETE | `/api/comentarios/:id/like`           | 🔒      | Remove a curtida de um comentário.  |
 
 O corpo para criação ou edição usa `{ "comentario": "..." }`; o limite é de 1.000 caracteres.
 
 ### Sugestões
 
-| Método | Rota | Acesso | Descrição |
-| --- | --- | --- | --- |
-| GET | `/api/sugestao` | Público | Lista sugestões de jogos. |
-| POST | `/api/sugestao` | 🔒 | Envia uma sugestão. |
-| PATCH | `/api/sugestao/:id` | 👑 | Atualiza o status da sugestão. |
-| DELETE | `/api/sugestao/:id` | 👑 | Exclui uma sugestão. |
+| Método | Rota                | Acesso  | Descrição                      |
+| ------ | ------------------- | ------- | ------------------------------ |
+| GET    | `/api/sugestao`     | Público | Lista sugestões de jogos.      |
+| POST   | `/api/sugestao`     | 🔒      | Envia uma sugestão.            |
+| PATCH  | `/api/sugestao/:id` | 👑      | Atualiza o status da sugestão. |
+| DELETE | `/api/sugestao/:id` | 👑      | Exclui uma sugestão.           |
 
 Exemplo de envio:
 
 ```json
 {
-  "nomeJogo": "Hades II",
-  "comentario": "Gostaria de acompanhar as avaliações da comunidade quando for lançado."
+    "nomeJogo": "Hades II",
+    "comentario": "Gostaria de acompanhar as avaliações da comunidade quando for lançado."
 }
 ```
 
@@ -199,7 +199,7 @@ As respostas são JSON. Erros seguem o formato abaixo:
 
 ```json
 {
-  "message": "Descrição do erro"
+    "message": "Descrição do erro"
 }
 ```
 
