@@ -3,7 +3,7 @@ import { Router } from "express";
 import ReviewController from "../controllers/review.controller.js";
 import autenticar from "../middlewares/autenticacao.middleware.js";
 import apenasAdmin from "../middlewares/admin.middleware.js";
-import ReviewValidacaoMiddleware from "../middlewares/review.validacao.middleware.js";
+import validarReview from "../middlewares/validarReview.middleware.js";
 
 const router = Router();
 
@@ -23,7 +23,7 @@ router.get("/jogo/:idJogo", ReviewController.listarPorJogo);
 router.get("/usuario/:idUsuario", ReviewController.listarPorUsuario);
 
 // Busca uma review específica
-router.get("/:id", ReviewValidacaoMiddleware.validarIdReview, ReviewController.buscarPorId);
+router.get("/:id", validarReview.validarIdReview, ReviewController.buscarPorId);
 
 /*
 |--------------------------------------------------------------------------
@@ -32,25 +32,25 @@ router.get("/:id", ReviewValidacaoMiddleware.validarIdReview, ReviewController.b
 */
 
 // Criar review
-router.post("/", autenticar, ReviewValidacaoMiddleware.validarCriacao, ReviewController.criar);
+router.post("/", autenticar, validarReview.validarCriacao, ReviewController.criar);
 
 // Atualizar review (somente dono)
 router.patch(
     "/:id",
     autenticar,
-    ReviewValidacaoMiddleware.validarIdReview,
-    ReviewValidacaoMiddleware.validarAtualizacao,
+    validarReview.validarIdReview,
+    validarReview.validarAtualizacao,
     ReviewController.atualizar
 );
 
 // Excluir review (somente dono)
-router.delete("/:id", autenticar, ReviewValidacaoMiddleware.validarIdReview, ReviewController.remover);
+router.delete("/:id", autenticar, validarReview.validarIdReview, ReviewController.remover);
 
 // Curtir review
-router.post("/:id/like", autenticar, ReviewValidacaoMiddleware.validarIdReview, ReviewController.curtir);
+router.post("/:id/like", autenticar, validarReview.validarIdReview, ReviewController.curtir);
 
 // Descurtir review
-router.delete("/:id/like", autenticar, ReviewValidacaoMiddleware.validarIdReview, ReviewController.descurtir);
+router.delete("/:id/like", autenticar, validarReview.validarIdReview, ReviewController.descurtir);
 
 /*
 |--------------------------------------------------------------------------
