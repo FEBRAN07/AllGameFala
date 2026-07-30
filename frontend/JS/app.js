@@ -2,6 +2,12 @@
 let currentUser = JSON.parse(localStorage.getItem('usuario')) || null;
 let currentSelectedGameId = null;
 
+function escapeHtml(valor) {
+  const div = document.createElement('div');
+  div.textContent = valor ?? '';
+  return div.innerHTML;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   setupAuthUI();
   loadCatalog();
@@ -68,8 +74,8 @@ function closeModal(id) {
 async function loadCatalog() {
   const grid = document.getElementById('games-grid');
   try {
-    const jogos = await API.getJogos();
-    renderGames(jogos);
+    const resultado = await API.getJogos();
+    renderGames(resultado.jogos);
   } catch (error) {
     grid.innerHTML = `<p style="color:var(--text-secondary); text-align:center; grid-column: 1/-1;">Erro ao carregar catálogo.</p>`;
   }
@@ -77,7 +83,7 @@ async function loadCatalog() {
 
 function renderGames(jogos) {
   const grid = document.getElementById('games-grid');
-  if (!jogos.length) {
+  if (!jogos || !jogos.length) {
     grid.innerHTML = `<p style="color:var(--text-secondary); text-align:center; grid-column: 1/-1;">Nenhum jogo encontrado.</p>`;
     return;
   }
@@ -85,11 +91,11 @@ function renderGames(jogos) {
   grid.innerHTML = jogos.map(jogo => `
     <div class="game-card" onclick="openGameDetails('${jogo.idIGDB}')">
       <div class="cover-container">
-        <img class="cover-img" src="${jogo.capa || 'https://via.placeholder.com/170x220'}" alt="${jogo.titulo}" loading="lazy"/>
+        <img class="cover-img" src="${jogo.capa || 'https://via.placeholder.com/170x220'}" alt="${escapeHtml(jogo.titulo)}" loading="lazy"/>
+        ${jogo.notaMedia ? `<div class="rating-pill">★ ${Number(jogo.notaMedia).toFixed(1)}</div>` : ''}
       </div>
       <div class="card-details">
-        <div class="game-title">${jogo.titulo}</div>
-        <div class="game-rating">★ ${jogo.notaMedia ? Number(jogo.notaMedia).toFixed(1) : 'N/A'}</div>
+        <div class="game-title">${escapeHtml(jogo.titulo)}</div>
       </div>
     </div>
   `).join('');
@@ -103,8 +109,12 @@ async function openGameDetails(jogoId) {
     document.getElementById('modal-game-cover').src = jogo.capa || 'https://via.placeholder.com/200';
     document.getElementById('modal-game-title').innerText = jogo.titulo;
     document.getElementById('modal-game-desc').innerText = jogo.sinopse || 'Sem descrição cadastrada.';
-    document.getElementById('modal-game-genre').innerText = jogo.genero || 'Geral';
-    document.getElementById('modal-game-year').innerText = jogo.dataLancamento.toLocaleDateString() || '-';
+    document.getElementById('modal-game-genre').innerText = Array.isArray(jogo.genero) && jogo.genero.length
+      ? jogo.genero.join(', ')
+      : 'Geral';
+    document.getElementById('modal-game-year').innerText = jogo.dataLancamento
+      ? new Date(jogo.dataLancamento).getFullYear()
+      : '-';
 
     await loadReviews(jogo._id);
     openModal('modal-game');
@@ -125,10 +135,10 @@ async function loadReviews(jogoId) {
     reviewsContainer.innerHTML = reviews.map(r => `
       <div class="review-item">
         <div class="review-header">
-          <span class="review-author">${r.usuario ? r.usuario.nome : 'Jogador'}</span>
+          <span class="review-author">${escapeHtml(r.usuario ? r.usuario.nome : 'Jogador')}</span>
           <span class="review-rating">${'★'.repeat(r.nota)}</span>
         </div>
-        <p class="review-text">${r.comentario}</p>
+        <p class="review-text">${escapeHtml(r.comentario)}</p>
       </div>
     `).join('');
   } catch (err) {
@@ -156,6 +166,7 @@ function setupEventListeners() {
         API.setToken(res.token);
         currentUser = res.usuario;
       }
+      localStorage.setItem('usuario', JSON.stringify(currentUser));
       setupAuthUI();
       closeModal('modal-auth');
     } catch (err) {
@@ -164,7 +175,7 @@ function setupEventListeners() {
   });
 
   // Busca
-  document.getElementById('btn-search').addEventListener('click', async () => {
+  const executarBusca = async () => {
     const query = document.getElementById('search-input').value.trim();
     if (!query) return loadCatalog();
 
@@ -175,6 +186,21 @@ function setupEventListeners() {
     } catch (err) {
       alert(err.message);
     }
+  };
+  document.getElementById('btn-search').addEventListener('click', executarBusca);
+  document.getElementById('search-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      executarBusca();
+    }
+  });
+
+  // Voltar para o catálogo
+  document.getElementById('nav-catalog').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('search-input').value = '';
+    document.getElementById('grid-title').innerText = 'Jogos em Destaque';
+    loadCatalog();
   });
 
   // Review Submit
@@ -195,14 +221,19 @@ function setupEventListeners() {
   });
 
   // Sugestão Submit
-  document.getElementById('nav-suggest').addEventListener('click', () => openModal('modal-suggest'));
+  document.getElementById('nav-suggest').addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('modal-suggest');
+  });
   document.getElementById('form-suggest').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const nome = document.getElementById('suggest-nome').value;
-    const motivo = document.getElementById('suggest-motivo').value;
+    if (!currentUser) return alert('Você precisa estar logado para enviar uma sugestão.');
+
+    const nomeJogo = document.getElementById('suggest-nome').value;
+    const comentario = document.getElementById('suggest-motivo').value;
 
     try {
-      await API.enviarSugestao(nome, motivo);
+      await API.enviarSugestao(nomeJogo, comentario);
       alert('Sugestão enviada com sucesso!');
       closeModal('modal-suggest');
       document.getElementById('form-suggest').reset();

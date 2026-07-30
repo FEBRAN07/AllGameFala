@@ -49,5 +49,5 @@ const API = {
   criarReview: (jogoId, nota, comentario) => API.request('/reviews', { method: 'POST', body: JSON.stringify({ jogo: jogoId, nota, comentario }) }),
 
   // Sugestões
-  enviarSugestao: (nome, motivo) => API.request('/sugestoes', { method: 'POST', body: JSON.stringify({ nome, motivo }) })
+  enviarSugestao: (nomeJogo, comentario) => API.request('/sugestao', { method: 'POST', body: JSON.stringify({ nomeJogo, comentario }) })
 };
