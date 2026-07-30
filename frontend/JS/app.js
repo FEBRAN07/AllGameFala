@@ -83,9 +83,9 @@ function renderGames(jogos) {
   }
 
   grid.innerHTML = jogos.map(jogo => `
-    <div class="game-card" onclick="openGameDetails('${jogo.id}')">
+    <div class="game-card" onclick="openGameDetails('${jogo.idIGDB}')">
       <div class="cover-container">
-        <img class="cover-img" src="${jogo.capaUrl || 'https://via.placeholder.com/170x220'}" alt="${jogo.titulo}" loading="lazy"/>
+        <img class="cover-img" src="${jogo.capa || 'https://via.placeholder.com/170x220'}" alt="${jogo.titulo}" loading="lazy"/>
       </div>
       <div class="card-details">
         <div class="game-title">${jogo.titulo}</div>
@@ -97,16 +97,16 @@ function renderGames(jogos) {
 
 // Detalhes do Jogo
 async function openGameDetails(jogoId) {
-  currentSelectedGameId = jogoId;
   try {
     const jogo = await API.getJogoById(jogoId);
-    document.getElementById('modal-game-cover').src = jogo.capaUrl || 'https://via.placeholder.com/200';
+    currentSelectedGameId = jogo._id;
+    document.getElementById('modal-game-cover').src = jogo.capa || 'https://via.placeholder.com/200';
     document.getElementById('modal-game-title').innerText = jogo.titulo;
     document.getElementById('modal-game-desc').innerText = jogo.descricao || 'Sem descrição cadastrada.';
     document.getElementById('modal-game-genre').innerText = jogo.genero || 'Geral';
     document.getElementById('modal-game-year').innerText = jogo.anoLancamento || '-';
 
-    await loadReviews(jogoId);
+    await loadReviews(jogo._id);
     openModal('modal-game');
   } catch (err) {
     alert(err.message);

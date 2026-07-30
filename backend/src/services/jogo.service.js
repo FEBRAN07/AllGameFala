@@ -8,7 +8,16 @@ async function buscarJogos(termoBusca) {
         "games",
         `search "${termoBusca}"; fields name,cover.url,first_release_date,genres.name,total_rating,total_rating_count,involved_companies.company.name,involved_companies.developer,involved_companies.publisher; where game_type = (0,8,9,10,11) & total_rating_count > 0; limit 50;`
     );
-    return resultado;
+
+    // Normaliza o formato da IGDB para o formato usado pelo frontend
+    return resultado.map((jogo) => ({
+        idIGDB: jogo.id,
+        titulo: jogo.name,
+        capa: jogo.cover?.url ? `https:${jogo.cover.url.replace("t_thumb", "t_cover_big")}` : null,
+        notaMedia: jogo.total_rating ? Number(jogo.total_rating) / 20 : null, // IGDB usa escala 0-100
+        genero: jogo.genres?.map((g) => g.name) || [],
+        anoLancamento: jogo.first_release_date ? new Date(jogo.first_release_date * 1000).getFullYear() : null,
+    }));
 }
 
 async function cadastrarJogo(dados) {
@@ -35,7 +44,7 @@ async function getOuCriarJogo(idIGDB) {
         desenvolvedor: dados.involved_companies?.filter((c) => c.developer).map((c) => c.company.name) || [],
         publicadoras: dados.involved_companies?.filter((c) => c.publisher).map((c) => c.company.name) || [],
         sinopse: dados.summary,
-        capa: dados.cover?.url,
+        capa: dados.cover?.url ? `https:${dados.cover.url.replace("t_thumb", "t_cover_big")}` : null,
         dataLancamento: dados.first_release_date ? new Date(dados.first_release_date * 1000) : Date.now(),
         genero: dados.genres?.map((g) => g.name) || [],
         plataformas: dados.platforms?.map((p) => p.name) || [],
@@ -77,7 +86,7 @@ async function listarJogos(query) {
     const ordenacao = { [campo]: direcao };
 
     const { jogos, total } = await JogoRepository.listar({ filtro, skip, limite, ordenacao });
-    
+
     return {
         jogos,
         paginacao: {

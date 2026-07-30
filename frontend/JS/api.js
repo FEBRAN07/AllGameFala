@@ -37,16 +37,16 @@ const API = {
 
   // Auth
   login: (email, senha) => API.request('/auth/login', { method: 'POST', body: JSON.stringify({ email, senha }) }),
-  registro: (nome, email, senha) => API.request('/auth/registro', { method: 'POST', body: JSON.stringify({ nome, email, senha }) }),
+  registro: (nome, email, senha) => API.request('/auth/cadastro', { method: 'POST', body: JSON.stringify({ nome, email, senha }) }),
 
   // Jogos
   getJogos: () => API.request('/jogos'),
-  buscarIGDB: (query) => API.request(`/jogos/buscar-igdb?busca=${encodeURIComponent(query)}`),
+  buscarIGDB: (query) => API.request(`/jogos/buscar?q=${encodeURIComponent(query)}`),
   getJogoById: (id) => API.request(`/jogos/${id}`),
 
   // Reviews
   getReviewsByJogo: (jogoId) => API.request(`/reviews/jogo/${jogoId}`),
-  criarReview: (jogoId, nota, comentario) => API.request('/reviews', { method: 'POST', body: JSON.stringify({ jogoId, nota, comentario }) }),
+  criarReview: (jogoId, nota, comentario) => API.request('/reviews', { method: 'POST', body: JSON.stringify({ jogo: jogoId, nota, comentario }) }),
 
   // Sugestões
   enviarSugestao: (nome, motivo) => API.request('/sugestoes', { method: 'POST', body: JSON.stringify({ nome, motivo }) })
