@@ -19,7 +19,7 @@ import criarErro from "./utils/criarErro.js";
 const app = express();
 
 const allowedOrigins = [
-    "http://localhost:3001",
+    "https://allgamefala-r8fs.onrender.com",
     ...(process.env.CORS_ORIGINS || "")
         .split(",")
         .map((origin) => origin.trim())
