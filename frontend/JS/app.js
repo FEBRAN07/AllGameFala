@@ -104,7 +104,7 @@ async function openGameDetails(jogoId) {
     document.getElementById('modal-game-title').innerText = jogo.titulo;
     document.getElementById('modal-game-desc').innerText = jogo.sinopse || 'Sem descrição cadastrada.';
     document.getElementById('modal-game-genre').innerText = jogo.genero || 'Geral';
-    document.getElementById('modal-game-year').innerText = jogo.dataLancamento || '-';
+    document.getElementById('modal-game-year').innerText = jogo.dataLancamento.toLocaleDateString() || '-';
 
     await loadReviews(jogo._id);
     openModal('modal-game');
