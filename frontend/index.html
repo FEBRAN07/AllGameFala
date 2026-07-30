@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AllGameFala | Comunidade de Jogos</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar-container">
+    <nav class="navbar">
+      <a href="#" class="logo" id="brand-logo">AllGame<span>Fala</span></a>
+      
+      <div class="nav-links">
+        <a href="#" class="nav-link active" id="nav-catalog">Catálogo</a>
+        <a href="#" class="nav-link" id="nav-suggest">Sugerir Jogo</a>
+      </div>
+
+      <div class="auth-wrapper" id="auth-area">
+        <button class="btn btn-outline" id="btn-open-login">Entrar</button>
+        <button class="btn btn-primary" id="btn-open-register">Cadastrar</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Container Principal -->
+  <main class="container">
+    
+    <!-- Seção Hero & Busca -->
+    <section class="hero-section">
+      <h1 class="hero-title">Acompanhe e avalie seus jogos favoritos</h1>
+      <p class="hero-subtitle">Descubra novos títulos, escreva reviews e participe da comunidade.</p>
+      
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Buscar por título ou consultar IGDB..." />
+        <button class="btn btn-primary" id="btn-search">Buscar</button>
+      </div>
+    </section>
+
+    <!-- Grid de Jogos (Estilo Backloggd) -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title" id="grid-title">Jogos em Destaque</h2>
+      </div>
+      <div id="games-grid" class="games-grid">
+        <!-- Renderizado dinamicamente pelo JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Auth (Login/Cadastro) -->
+  <div class="modal-overlay" id="modal-auth">
+    <div class="modal">
+      <button class="modal-close" class="close-btn" onclick="closeModal('modal-auth')">&times;</button>
+      <h2 id="auth-modal-title" class="modal-title">Entrar na Conta</h2>
+      
+      <form id="form-auth" class="modal-form">
+        <div class="form-group" id="group-nome" style="display: none;">
+          <label>Nome Completo</label>
+          <input type="text" id="auth-nome" class="form-control" placeholder="Seu nome">
+        </div>
+        
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="auth-email" class="form-control" placeholder="seu@email.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="auth-senha" class="form-control" placeholder="••••••••" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-full" id="btn-auth-submit">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Detalhes do Jogo & Reviews -->
+  <div class="modal-overlay" id="modal-game">
+    <div class="modal modal-lg">
+      <button class="modal-close" onclick="closeModal('modal-game')">&times;</button>
+      
+      <div class="game-details-layout">
+        <div class="game-details-sidebar">
+          <img id="modal-game-cover" src="" alt="Capa" class="game-details-cover">
+          <div class="game-details-meta">
+            <span class="badge" id="modal-game-genre">Gênero</span>
+            <span class="badge" id="modal-game-year">Ano</span>
+          </div>
+        </div>
+
+        <div class="game-details-content">
+          <h2 id="modal-game-title" class="modal-title">Título do Jogo</h2>
+          <p id="modal-game-desc" class="game-description">Descrição do jogo...</p>
+
+          <hr class="divider" />
+
+          <!-- Nova Review -->
+          <div class="add-review-box">
+            <h3>Escrever uma Review</h3>
+            <form id="form-review">
+              <div class="rating-input-group">
+                <label>Sua Nota (1 a 5):</label>
+                <select id="review-nota" class="form-control select-inline" required>
+                  <option value="5">★★★★★ (5)</option>
+                  <option value="4">★★★★☆ (4)</option>
+                  <option value="3">★★★☆☆ (3)</option>
+                  <option value="2">★★☆☆☆ (2)</option>
+                  <option value="1">★☆☆☆☆ (1)</option>
+                </select>
+              </div>
+              <textarea id="review-texto" class="form-control" rows="3" placeholder="O que você achou deste jogo?" required></textarea>
+              <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 10px;">Publicar Review</button>
+            </form>
+          </div>
+
+          <!-- Lista de Reviews -->
+          <div class="reviews-list-container">
+            <h3>Avaliações dos Jogadores</h3>
+            <div id="reviews-list" class="reviews-list">
+              <!-- Renderizado via JS -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Sugerir Jogo -->
+  <div class="modal-overlay" id="modal-suggest">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-suggest')">&times;</button>
+      <h2 class="modal-title">Sugerir Jogo</h2>
+      <form id="form-suggest" class="modal-form">
+        <div class="form-group">
+          <label>Nome do Jogo</label>
+          <input type="text" id="suggest-nome" class="form-control" placeholder="Ex: Elden Ring" required>
+        </div>
+        <div class="form-group">
+          <label>Motivo da Sugestão</label>
+          <textarea id="suggest-motivo" class="form-control" rows="3" placeholder="Por que deveríamos adicionar este jogo?" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Enviar Sugestão</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="./JS/api.js"></script>
+  <script src="./JS/app.js"></script>
+</body>
+</html>
