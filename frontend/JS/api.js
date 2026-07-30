@@ -1,5 +1,5 @@
 // JS/api.js - Camada de requisições
-const API_BASE_URL = 'http://localhost:3000/api'; // Ajuste caso necessário
+const API_BASE_URL = 'https://allgamefala.onrender.com/api'; // Ajuste caso necessário
 
 const API = {
   getToken() {
