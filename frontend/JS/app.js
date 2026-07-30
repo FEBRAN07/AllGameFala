@@ -102,9 +102,9 @@ async function openGameDetails(jogoId) {
     currentSelectedGameId = jogo._id;
     document.getElementById('modal-game-cover').src = jogo.capa || 'https://via.placeholder.com/200';
     document.getElementById('modal-game-title').innerText = jogo.titulo;
-    document.getElementById('modal-game-desc').innerText = jogo.descricao || 'Sem descrição cadastrada.';
+    document.getElementById('modal-game-desc').innerText = jogo.sinopse || 'Sem descrição cadastrada.';
     document.getElementById('modal-game-genre').innerText = jogo.genero || 'Geral';
-    document.getElementById('modal-game-year').innerText = jogo.anoLancamento || '-';
+    document.getElementById('modal-game-year').innerText = jogo.dataLancamento || '-';
 
     await loadReviews(jogo._id);
     openModal('modal-game');
