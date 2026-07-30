@@ -6,14 +6,13 @@ import criarErro from "../utils/criarErro.js";
 const INTERVALO_MINIMO_ENTRE_REVIEWS_MS = 24 * 60 * 60 * 1000;
 
 async function atualizarNotaMedia(idJogo) {
-
     const reviews = await ReviewRepository.listarPorJogo(idJogo);
 
     if (reviews.length === 0) {
-
         const jogo = await JogoRepository.buscarPorIdNosso(idJogo);
 
         jogo.notaMedia = 0;
+        jogo.quantidadeReviews = 0;
 
         await JogoRepository.salvar(jogo);
 
@@ -27,61 +26,57 @@ async function atualizarNotaMedia(idJogo) {
     const jogo = await JogoRepository.buscarPorIdNosso(idJogo);
 
     jogo.notaMedia = media;
+    jogo.quantidadeReviews = reviews.length;
 
     await JogoRepository.salvar(jogo);
 }
 
 async function criar(idUsuario, dados) {
- 
     const { jogo, nota, comentario } = dados;
- 
+
     if (nota < 0 || nota > 5) {
         throw criarErro("A nota deve estar entre 0 e 5.", 400);
     }
- 
+
     const jogoEncontrado = await JogoRepository.buscarPorIdNosso(jogo);
- 
+
     if (!jogoEncontrado) {
         throw criarErro("Jogo não encontrado.", 404);
     }
- 
+
     const ultimaReview = await ReviewRepository.buscarUltimaPorUsuarioEJogo(idUsuario, jogo);
- 
+
     if (ultimaReview) {
- 
         const tempoDecorrido = Date.now() - ultimaReview.createdAt.getTime();
- 
+
         if (tempoDecorrido < INTERVALO_MINIMO_ENTRE_REVIEWS_MS) {
- 
             const tempoRestanteMs = INTERVALO_MINIMO_ENTRE_REVIEWS_MS - tempoDecorrido;
             const horasRestantes = Math.ceil(tempoRestanteMs / (60 * 60 * 1000));
- 
+
             throw criarErro(
                 `Você já avaliou este jogo recentemente. Tente novamente em cerca de ${horasRestantes}h.`,
                 429
             );
         }
     }
- 
+
     const review = await ReviewRepository.criar({
         usuario: idUsuario,
         jogo,
         nota,
-        comentario
+        comentario,
     });
- 
+
     await atualizarNotaMedia(jogo);
- 
+
     return review;
 }
-
 
 async function listarTodas() {
     return await ReviewRepository.listarTodas();
 }
 
 async function listarPorJogo(idJogo) {
-
     const jogo = await JogoRepository.buscarPorIdNosso(idJogo);
 
     if (!jogo) {
@@ -92,13 +87,10 @@ async function listarPorJogo(idJogo) {
 }
 
 async function listarPorUsuario(idUsuario) {
-
     return await ReviewRepository.listarPorUsuario(idUsuario);
-
 }
 
 async function buscarPorId(idReview) {
-
     const review = await ReviewRepository.buscarPorId(idReview);
 
     if (!review) {
@@ -109,7 +101,6 @@ async function buscarPorId(idReview) {
 }
 
 async function atualizar(idUsuario, idReview, dados) {
-
     const review = await ReviewRepository.buscarPorId(idReview);
 
     if (!review) {
@@ -121,7 +112,6 @@ async function atualizar(idUsuario, idReview, dados) {
     }
 
     if (dados.nota !== undefined) {
-
         if (dados.nota < 0 || dados.nota > 5) {
             throw criarErro("A nota deve estar entre 0 e 5.", 400);
         }
@@ -133,10 +123,7 @@ async function atualizar(idUsuario, idReview, dados) {
         review.comentario = dados.comentario;
     }
 
-    const reviewAtualizada = await ReviewRepository.atualizarPorId(
-        idReview,
-        review
-    );
+    const reviewAtualizada = await ReviewRepository.atualizarPorId(idReview, review);
 
     await atualizarNotaMedia(review.jogo._id);
 
@@ -144,7 +131,6 @@ async function atualizar(idUsuario, idReview, dados) {
 }
 
 async function remover(idUsuario, idReview) {
-
     const review = await ReviewRepository.buscarPorId(idReview);
 
     if (!review) {
@@ -165,16 +151,13 @@ async function remover(idUsuario, idReview) {
 }
 
 async function curtir(idUsuario, idReview) {
-
     const review = await ReviewRepository.buscarPorId(idReview);
 
     if (!review) {
         throw criarErro("Review não encontrada.", 404);
     }
 
-    const jaCurtiu = review.likes.some(
-        (idLike) => idLike.toString() === idUsuario
-    );
+    const jaCurtiu = review.likes.some((idLike) => idLike.toString() === idUsuario);
 
     if (jaCurtiu) {
         throw criarErro("Você já curtiu esta review.", 400);
@@ -184,16 +167,13 @@ async function curtir(idUsuario, idReview) {
 }
 
 async function descurtir(idUsuario, idReview) {
-
     const review = await ReviewRepository.buscarPorId(idReview);
 
     if (!review) {
         throw criarErro("Review não encontrada.", 404);
     }
 
-    const curtiu = review.likes.some(
-        (idLike) => idLike.toString() === idUsuario
-    );
+    const curtiu = review.likes.some((idLike) => idLike.toString() === idUsuario);
 
     if (!curtiu) {
         throw criarErro("Você ainda não curtiu esta review.", 400);
@@ -203,7 +183,6 @@ async function descurtir(idUsuario, idReview) {
 }
 
 async function removerPorJogo(idJogo) {
-
     const reviews = await ReviewRepository.listarPorJogo(idJogo);
 
     for (const review of reviews) {
@@ -214,7 +193,6 @@ async function removerPorJogo(idJogo) {
 }
 
 async function removerPorUsuario(idUsuario) {
-
     const reviews = await ReviewRepository.listarPorUsuario(idUsuario);
 
     const jogosAfetados = new Set();
